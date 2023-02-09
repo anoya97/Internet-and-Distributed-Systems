@@ -1,0 +1,88 @@
+=================================================TESTS PARA LA FUNCIÓN 1:=================================================
+
+CREAR EVENTOS:
+
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-addEvent 'Fiesta' 'Fiesta Verano' '2023-08-15T17:00' '2023-08-16T00:00'" 		 // eventId=1 creado
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-addEvent 'Presentación' 'Presentacón de producto' '2023-09-15T11:00' '2023-09-15T13:00'" // eventId=2 creado
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-addEvent 'Fiesta' 'Fiesta Otoño' '2023-10-15T17:00' '2023-10-16T00:00'"			 // eventId=3 creado
+
+COMPROBACIÓN DE ERRORES:
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-addEvent ' ' 'Fiesta Otoño' '2023-10-15T17:00' '2023-10-16T00:00'"		// Falla (nombre inválido)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-addEvent 'Fiesta' ' ' '2023-10-15T17:00' '2023-10-16T00:00'"			// Falla (descripción inválida)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-addEvent 'Fiesta' 'Fiesta Otoño' '2022-08-01T21:00' '2022-08-02T00:00'" 	// Falla (fecha inválida)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-addEvent 'Cena' 'Cena Otoño' '2023-10-01T21:00' '2023-10-01T20:00'"		// Falla (fecha fin <= fecha inicio)
+ 
+=================================================TESTS PARA LA FUNCIÓN 4:=================================================
+
+RESPONDER A UN EVENTO:
+
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-respond 'user1@udc.es' 1 true"		// responseId=1 creada
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-respond 'user2@udc.es' 1 false"		// responseId=2 creada
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-respond 'user1@udc.es' 3 false"		// responseId=3 creada
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-respond 'user3@udc.es' 3 false"		// responseId=4 creada
+		
+COMPROBACIÓN DE ERRORES:
+
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-respond 'user1@udc.es' 3 true"		// Falla (ya respondido)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-respond 'user1@udc.es' 9 true"		// Falla (evento no exite)
+UPDATE Event SET celebrationDate='2022-08-01 21:00' WHERE eventId=2;
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-respond 'user4@udc.es' 2 true"		// Falla (fuera de plazo)
+
+=================================================TESTS PARA LA FUNCIÓN 5:=================================================
+
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-cancel 3"		// eventId=3 cancelado
+
+COMPROBACIÓN DE ERRORES:
+
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-cancel 3"		// Falla (evento cancelado)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-cancel 2"		// Falla (fuera de plazo)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-cancel 9"		// Falla (evento no existe)
+
+=================================================TEST PARA LA FUNCIÓN 4:==================================================
+
+RESPONDER A UN EVENTO YA CANCELADO:
+
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-respond 'user4@udc.es' 3 true"	// Falla (evento cancelado)
+
+=================================================TESTS PARA LA FUNCIÓN 2:=================================================
+
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-findEvents '2023-12-01'"			// Devuelve eventos con id 1 y 3
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-findEvents '2023-09-01'"			// Devuelve evento con id 1 
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-findEvents '2023-12-01' 'Verano'"		// Devuelve evento con id 1 
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-findEvents '2023-08-01'"			// Devuelve lista vacía
+
+COMPROBACIÓN DE ERRORES:
+
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-findEvents '2022-08-01'"			// Falla (fecha pasada)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-findEvents '2023-12-01' 'Fiesta Verano'"	// Falla (más de un keyword)
+
+=================================================TESTS PARA LA FUNCIÓN 3:=================================================
+
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-findEvent 2"
+
+COMPROBACIÓN DE ERRORES:
+
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-findEvent 9"		// Falla (evento no existe)
+
+=================================================TESTS PARA LA FUNCIÓN 6:=================================================
+
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-findResponses 'user1@udc.es' false"		// Devuelve respuestas con id 1
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-findResponses 'user1@udc.es' true"		// Devuelve respuestas con id 1 Y 3
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-findResponses 'user6@udc.es' true"		// Devuelve lista vacía
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.AppServiceClient" -Dexec.args="-findResponses ' ' true"				// Falla (email inválido)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

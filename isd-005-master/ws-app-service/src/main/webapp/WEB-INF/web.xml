@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         version="2.4">
+
+    <distributable/>
+
+    <display-name>WS App Service</display-name>
+
+    <!-- REST service -->
+
+    <servlet>
+        <display-name>EventServlet</display-name>
+        <servlet-name>EventServlet</servlet-name>
+        <servlet-class>
+            es.udc.ws.app.restservice.servlets.EventServlet
+        </servlet-class>
+    </servlet>
+
+    <servlet>
+        <display-name>ResponseServlet</display-name>
+        <servlet-name>ResponseServlet</servlet-name>
+        <servlet-class>
+            es.udc.ws.app.restservice.servlets.ResponseServlet
+        </servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>EventServlet</servlet-name>
+        <url-pattern>/events/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ResponseServlet</servlet-name>
+        <url-pattern>/responses/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Thrift service -->
+
+     <servlet>
+         <servlet-name>ThriftEventServiceServlet</servlet-name>
+         <servlet-class>es.udc.ws.app.thriftservice.ThriftEventServiceServlet</servlet-class>
+     </servlet>
+
+     <servlet-mapping>
+         <servlet-name>ThriftEventServiceServlet</servlet-name>
+         <url-pattern>/thrift/eventservice</url-pattern>
+     </servlet-mapping>
+
+
+    <!-- General configuration -->
+
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+
+</web-app>
